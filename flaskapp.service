@@ -1,0 +1,12 @@
+[Unit]
+Description=Flask Application
+After=network.target
+
+[Service]
+User=jaz
+WorkingDirectory=/app/ja-zennoh
+ExecStart=/usr/bin/python3 /app/ja-zennoh/app.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
