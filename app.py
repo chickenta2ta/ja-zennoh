@@ -25,6 +25,8 @@ def capture():
     if ret:
         cv2.imwrite(os.path.join(folder_name, f"frame_{timestamp}.jpg"), frame)
 
+    return "Image captured successfully", 200
+
 
 def cleanup():
     cap.release()
