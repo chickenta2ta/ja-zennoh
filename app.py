@@ -1,6 +1,7 @@
 import atexit
 import datetime
 import os
+import threading
 
 import cv2
 from flask import Flask, request
@@ -9,6 +10,23 @@ app = Flask(__name__)
 
 stream_url = "http://localhost:8080/?action=stream"
 cap = cv2.VideoCapture(stream_url)
+current_frame = None
+
+lock = threading.Lock()
+
+
+def update_frame():
+    global current_frame
+    while True:
+        ret, frame = cap.read()
+        if ret:
+            with lock:
+                current_frame = frame
+
+
+thread = threading.Thread(target=update_frame)
+thread.daemon = True
+thread.start()
 
 today = datetime.date.today().strftime("%Y%m%d")
 
@@ -21,11 +39,14 @@ if not os.path.exists(folder_name):
 def capture():
     timestamp = request.args.get("timestamp")
 
-    ret, frame = cap.read()
-    if ret:
-        cv2.imwrite(os.path.join(folder_name, f"frame_{timestamp}.jpg"), frame)
-
-    return "Image captured successfully", 200
+    with lock:
+        if current_frame is not None:
+            cv2.imwrite(
+                os.path.join(folder_name, f"frame_{timestamp}.jpg"), current_frame
+            )
+            return "Image captured successfully", 200
+        else:
+            return "No frame available", 500
 
 
 def cleanup():
