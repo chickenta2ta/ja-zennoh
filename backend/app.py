@@ -4,9 +4,9 @@ import os
 import threading
 
 import cv2
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="/app/ja-zennoh/frontend/out")
 
 stream_url = "http://localhost:8080/?action=stream"
 cap = cv2.VideoCapture(stream_url)
@@ -57,5 +57,5 @@ atexit.register(cleanup)
 
 
 @app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+def index():
+    return send_from_directory(app.static_folder, "index.html")
