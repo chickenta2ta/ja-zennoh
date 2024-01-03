@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 User=jaz
-WorkingDirectory=/app/ja-zennoh
-ExecStart=/usr/bin/flask --app /app/ja-zennoh/backend/app run --host=0.0.0.0
+WorkingDirectory=/app/ja-zennoh/backend
+ExecStart=/usr/bin/flask run --host=0.0.0.0
 Restart=always
 
 [Install]
