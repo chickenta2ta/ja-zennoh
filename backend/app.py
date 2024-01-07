@@ -5,8 +5,10 @@ import threading
 
 import cv2
 from flask import Flask, request, send_from_directory
+from flask_cors import CORS
 
 app = Flask(__name__, static_folder="/app/ja-zennoh/frontend/out")
+CORS(app)
 
 stream_url = "http://localhost:8080/?action=stream"
 cap = cv2.VideoCapture(stream_url)
