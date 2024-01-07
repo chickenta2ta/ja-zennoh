@@ -57,8 +57,12 @@ export default function Home() {
       ref.current();
     }, 200);
     const thumbnailIntervalID = setInterval(() => {
+      const now = new Date().getTime();
+
       setThumbnails(
-        ipAddresses.map((ip) => `http://${ip}:8080/?action=snapshot`)
+        ipAddresses.map(
+          (ip) => `http://${ip}:8080/?action=snapshot&timestamp=${now}`
+        )
       );
     }, 5000);
     return () => {
