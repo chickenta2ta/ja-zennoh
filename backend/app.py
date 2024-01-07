@@ -61,3 +61,8 @@ atexit.register(cleanup)
 @app.route("/")
 def index():
     return send_from_directory(app.static_folder, "index.html")
+
+
+@app.route("/_next/static/<path:filename>")
+def next_static(filename):
+    return send_from_directory("/app/ja-zennoh/frontend/out/_next/static", filename)
