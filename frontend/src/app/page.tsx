@@ -26,9 +26,9 @@ export default function Home() {
   const ipAddresses = [
     "localhost",
     "192.168.0.2",
-    // "192.168.0.3",
-    // "192.168.0.4",
-    // "192.168.0.5",
+    "192.168.0.3",
+    "192.168.0.4",
+    "192.168.0.5",
   ];
   const [isRecording, setIsRecording] = useState(
     new Array(ipAddresses.length).fill(false)
