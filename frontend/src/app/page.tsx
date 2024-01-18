@@ -55,7 +55,7 @@ export default function Home() {
   useEffect(() => {
     const captureIntervalID = setInterval(() => {
       ref.current();
-    }, 200);
+    }, 500);
     const thumbnailIntervalID = setInterval(() => {
       const now = new Date().getTime();
 
