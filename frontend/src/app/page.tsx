@@ -108,7 +108,7 @@ export default function Home() {
                   visibility: isRecording[index] ? "visible" : "hidden",
                 }}
               />
-              <a href={`http://${ip}:8080/?action=stream`}>
+              <a href={`http://${ip}:8080/?action=snapshot`}>
                 <img
                   src={thumbnails[index]}
                   height={72}
