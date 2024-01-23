@@ -10,8 +10,7 @@ from flask_cors import CORS
 app = Flask(__name__, static_folder="/app/ja-zennoh/frontend/out")
 CORS(app)
 
-stream_url = "http://localhost:8080/?action=stream"
-cap = cv2.VideoCapture(stream_url)
+cap = cv2.VideoCapture(0)
 current_frame = None
 
 is_recording = False
