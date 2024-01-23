@@ -11,6 +11,12 @@ app = Flask(__name__, static_folder="/app/ja-zennoh/frontend/out")
 CORS(app)
 
 cap = cv2.VideoCapture(0)
+
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+
+cap.set(cv2.CAP_PROP_FPS, 30)
+
 current_frame = None
 
 is_recording = False
