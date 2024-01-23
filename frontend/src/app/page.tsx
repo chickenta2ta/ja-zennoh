@@ -7,8 +7,7 @@ import Stack from "@mui/material/Stack";
 import Switch from "@mui/material/Switch";
 import Typography from "@mui/material/Typography";
 import { alpha, styled } from "@mui/material/styles";
-import dayjs from "dayjs";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 const GreenSwitch = styled(Switch)(({ theme }) => ({
   "& .MuiSwitch-switchBase.Mui-checked": {
@@ -37,26 +36,8 @@ export default function Home() {
     new Array(ipAddresses.length).fill(undefined)
   );
 
-  const captureFrame = () => {
-    const now = dayjs().format("YYYYMMDD_HHmmss_SSS");
-
-    ipAddresses.forEach((ip, index) => {
-      if (isRecording[index]) {
-        fetch(`http://${ip}:5000/api/capture?timestamp=${now}`);
-      }
-    });
-  };
-
-  const ref = useRef(captureFrame);
   useEffect(() => {
-    ref.current = captureFrame;
-  }, [captureFrame]);
-
-  useEffect(() => {
-    const captureIntervalID = setInterval(() => {
-      ref.current();
-    }, 500);
-    const thumbnailIntervalID = setInterval(() => {
+    const intervalID = setInterval(() => {
       const now = new Date().getTime();
 
       setThumbnails(
@@ -66,14 +47,32 @@ export default function Home() {
       );
     }, 5000);
     return () => {
-      clearInterval(captureIntervalID);
-      clearInterval(thumbnailIntervalID);
+      clearInterval(intervalID);
     };
   }, []);
 
+  const startRecording = (ip: string) => {
+    fetch(`http://${ip}:5000/api/capture/start`);
+  };
+
+  const stopRecording = (ip: string) => {
+    fetch(`http://${ip}:5000/api/capture/stop`);
+  };
+
   const handleChange = (index: number) => {
     setIsRecording((prevIsRecording) =>
-      prevIsRecording.map((element, i) => (i === index ? !element : element))
+      prevIsRecording.map((element, i) => {
+        if (i === index) {
+          if (!element) {
+            startRecording(ipAddresses[index]);
+          } else {
+            stopRecording(ipAddresses[index]);
+          }
+          return !element;
+        } else {
+          return element;
+        }
+      })
     );
   };
 
