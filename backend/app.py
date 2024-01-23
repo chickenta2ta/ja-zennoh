@@ -1,6 +1,7 @@
 import atexit
 import datetime
 import os
+import threading
 
 import cv2
 from flask import Flask, send_from_directory
@@ -28,6 +29,10 @@ def update_frame():
                     os.path.join(folder_name, f"frame_{now}.jpg"), current_frame
                 )
 
+
+thread = threading.Thread(target=update_frame)
+thread.daemon = True
+thread.start()
 
 today = datetime.date.today().strftime("%Y%m%d")
 
