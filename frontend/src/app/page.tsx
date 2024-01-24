@@ -42,7 +42,7 @@ export default function Home() {
 
       setThumbnails(
         ipAddresses.map(
-          (ip) => `http://${ip}:8080/?action=snapshot&timestamp=${now}`
+          (ip) => `http://${ip}:5000/api/capture/thumbnail?timestamp=${now}`
         )
       );
     }, 5000);

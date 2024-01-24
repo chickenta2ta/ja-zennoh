@@ -5,7 +5,7 @@ import queue
 import threading
 
 import cv2
-from flask import Flask, send_from_directory
+from flask import Flask, Response, send_from_directory
 from flask_cors import CORS
 
 app = Flask(__name__, static_folder="/app/ja-zennoh/frontend/out")
@@ -73,6 +73,15 @@ def stop_capture():
     global is_recording
     is_recording = False
     return "Recording stopped", 200
+
+
+@app.route("/api/capture/thumbnail")
+def get_thumbnail():
+    global current_frame
+    if current_frame is not None:
+        retval, buf = cv2.imencode(".jpg", current_frame)
+        if retval:
+            return Response(buf.tobytes(), mimetype="image/jpeg")
 
 
 def cleanup():
