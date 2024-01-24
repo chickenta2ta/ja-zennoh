@@ -8,6 +8,7 @@ import Stack from "@mui/material/Stack";
 import Switch from "@mui/material/Switch";
 import Typography from "@mui/material/Typography";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const theme = createTheme({
@@ -123,7 +124,7 @@ export default function Home() {
                     visibility: isRecording[index] ? "visible" : "hidden",
                   }}
                 />
-                <a href={`http://${ip}:8080/?action=snapshot`}>
+                <Link href={{ pathname: "/preview", query: { ip: ip } }}>
                   <img
                     src={thumbnails[index]}
                     height={72}
@@ -132,7 +133,7 @@ export default function Home() {
                       display: "block",
                     }}
                   />
-                </a>
+                </Link>
                 <Typography
                   variant="subtitle1"
                   sx={{
