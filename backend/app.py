@@ -1,10 +1,13 @@
 import atexit
 import datetime
+import glob
 import os
 import queue
 import threading
 
+import boto3
 import cv2
+from botocore.exceptions import ClientError
 from flask import Flask, Response, send_from_directory
 from flask_cors import CORS
 
@@ -82,6 +85,20 @@ def get_thumbnail():
         retval, buf = cv2.imencode(".jpg", current_frame)
         if retval:
             return Response(buf.tobytes(), mimetype="image/jpeg")
+
+
+s3_client = boto3.client("s3")
+
+
+@app.route("/api/upload")
+def upload_to_s3():
+    try:
+        for file_name in glob.glob(f"/app/images/{today}/*.jpg"):
+            object_name = os.path.basename(file_name)
+            s3_client.upload_file(file_name, "ja-zennoh", object_name)
+        return "Files successfully uploaded to S3", 200
+    except ClientError as _:
+        return "Failed to upload files to S3", 500
 
 
 def cleanup():
