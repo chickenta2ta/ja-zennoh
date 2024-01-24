@@ -77,6 +77,24 @@ export default function Home() {
     );
   };
 
+  const handleUpload = (index: number) => {
+    setIsUploading((prevIsUploading) =>
+      prevIsUploading.map((element, i) => {
+        i === index ? true : element;
+      })
+    );
+
+    fetch(
+      `http://${ipAddresses[index]}:5000/api/upload?height=${heights[index]}`
+    ).finally(() => {
+      setIsUploading((prevIsUploading) =>
+        prevIsUploading.map((element, i) => {
+          i === index ? false : element;
+        })
+      );
+    });
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Stack
@@ -137,6 +155,7 @@ export default function Home() {
                   }}
                 />
                 <LoadingButton
+                  onClick={() => handleUpload(index)}
                   loading={isUploading[index]}
                   variant="outlined"
                   disabled={isRecording[index]}
