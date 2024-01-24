@@ -6,20 +6,16 @@ import ListItem from "@mui/material/ListItem";
 import Stack from "@mui/material/Stack";
 import Switch from "@mui/material/Switch";
 import Typography from "@mui/material/Typography";
-import { alpha, styled } from "@mui/material/styles";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 
-const GreenSwitch = styled(Switch)(({ theme }) => ({
-  "& .MuiSwitch-switchBase.Mui-checked": {
-    color: "#22c55e",
-    "&:hover": {
-      backgroundColor: alpha("#22c55e", theme.palette.action.hoverOpacity),
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#22c55e",
     },
   },
-  "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-    backgroundColor: "#22c55e",
-  },
-}));
+});
 
 export default function Home() {
   const ipAddresses = [
@@ -77,66 +73,68 @@ export default function Home() {
   };
 
   return (
-    <Stack
-      justifyContent="center"
-      alignItems="center"
-      sx={{
-        bgcolor: "#f3f4f6",
-        height: "100vh",
-        width: "100%",
-      }}
-    >
-      <List
+    <ThemeProvider theme={theme}>
+      <Stack
+        justifyContent="center"
+        alignItems="center"
         sx={{
-          bgcolor: "white",
-          width: "50%",
+          bgcolor: "#f3f4f6",
+          height: "100vh",
+          width: "100%",
         }}
       >
-        {ipAddresses.map((ip, index) => {
-          return (
-            <ListItem key={ip}>
-              <Chip
-                label="REC"
-                size="small"
-                sx={{
-                  bgcolor: "#ef4444",
-                  color: "white",
-                  width: 62.5,
-                  marginRight: 2,
-                  fontWeight: "medium",
-                  visibility: isRecording[index] ? "visible" : "hidden",
-                }}
-              />
-              <a href={`http://${ip}:8080/?action=snapshot`}>
-                <img
-                  src={thumbnails[index]}
-                  height={72}
-                  width={128}
-                  style={{
-                    display: "block",
+        <List
+          sx={{
+            bgcolor: "white",
+            width: "50%",
+          }}
+        >
+          {ipAddresses.map((ip, index) => {
+            return (
+              <ListItem key={ip}>
+                <Chip
+                  label="REC"
+                  size="small"
+                  sx={{
+                    bgcolor: "#ef4444",
+                    color: "white",
+                    width: 62.5,
+                    marginRight: 2,
+                    fontWeight: "medium",
+                    visibility: isRecording[index] ? "visible" : "hidden",
                   }}
                 />
-              </a>
-              <Typography
-                variant="subtitle1"
-                sx={{
-                  paddingLeft: 1.5,
-                }}
-              >
-                {ip}
-              </Typography>
-              <GreenSwitch
-                checked={isRecording[index]}
-                onChange={() => handleChange(index)}
-                sx={{
-                  position: "absolute",
-                  right: 8,
-                }}
-              />
-            </ListItem>
-          );
-        })}
-      </List>
-    </Stack>
+                <a href={`http://${ip}:8080/?action=snapshot`}>
+                  <img
+                    src={thumbnails[index]}
+                    height={72}
+                    width={128}
+                    style={{
+                      display: "block",
+                    }}
+                  />
+                </a>
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    paddingLeft: 1.5,
+                  }}
+                >
+                  {ip}
+                </Typography>
+                <Switch
+                  checked={isRecording[index]}
+                  onChange={() => handleChange(index)}
+                  sx={{
+                    position: "absolute",
+                    right: 8,
+                  }}
+                />
+              </ListItem>
+            );
+          })}
+        </List>
+      </Stack>
+    </ThemeProvider>
   );
 }
