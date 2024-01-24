@@ -1,5 +1,6 @@
 "use client";
 
+import LoadingButton from "@mui/lab/LoadingButton";
 import Chip from "@mui/material/Chip";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -25,7 +26,11 @@ export default function Home() {
     "192.168.0.4",
     "192.168.0.5",
   ];
+  const heights = ["2500", "1400", "900", "600", "300"];
   const [isRecording, setIsRecording] = useState(
+    new Array(ipAddresses.length).fill(false)
+  );
+  const [isUploading, setIsUploading] = useState(
     new Array(ipAddresses.length).fill(false)
   );
   const [thumbnails, setThumbnails] = useState(
@@ -55,7 +60,7 @@ export default function Home() {
     fetch(`http://${ip}:5000/api/capture/stop`);
   };
 
-  const handleChange = (index: number) => {
+  const handleRecord = (index: number) => {
     setIsRecording((prevIsRecording) =>
       prevIsRecording.map((element, i) => {
         if (i === index) {
@@ -124,12 +129,24 @@ export default function Home() {
                 </Typography>
                 <Switch
                   checked={isRecording[index]}
-                  onChange={() => handleChange(index)}
+                  disabled={isUploading[index]}
+                  onChange={() => handleRecord(index)}
                   sx={{
                     position: "absolute",
-                    right: 8,
+                    right: 119.6 - 8,
                   }}
                 />
+                <LoadingButton
+                  loading={isUploading[index]}
+                  variant="outlined"
+                  disabled={isRecording[index]}
+                  sx={{
+                    position: "absolute",
+                    right: 16,
+                  }}
+                >
+                  <span>Upload</span>
+                </LoadingButton>
               </ListItem>
             );
           })}
