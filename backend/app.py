@@ -1,6 +1,7 @@
 import atexit
 import datetime
 import os
+import queue
 import threading
 
 import cv2
@@ -10,6 +11,29 @@ from flask_cors import CORS
 app = Flask(__name__, static_folder="/app/ja-zennoh/frontend/out")
 CORS(app)
 
+today = datetime.date.today().strftime("%Y%m%d")
+
+folder_name = f"/app/images/{today}"
+if not os.path.exists(folder_name):
+    os.makedirs(folder_name)
+
+write_queue = queue.Queue()
+
+
+def write_frame():
+    while True:
+        frame, timestamp = write_queue.get()
+
+        if frame is None:
+            break
+
+        cv2.imwrite(os.path.join(folder_name, f"frame_{timestamp}.jpg"), frame)
+
+
+write_thread = threading.Thread(target=write_frame)
+write_thread.daemon = True
+write_thread.start()
+
 cap = cv2.VideoCapture(0)
 
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
@@ -18,7 +42,6 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 cap.set(cv2.CAP_PROP_FPS, 30)
 
 current_frame = None
-
 is_recording = False
 
 
@@ -29,21 +52,13 @@ def update_frame():
         if ret:
             current_frame = frame
             if is_recording:
-                now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-                cv2.imwrite(
-                    os.path.join(folder_name, f"frame_{now}.jpg"), current_frame
-                )
+                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+                write_queue.put((current_frame, timestamp))
 
 
-thread = threading.Thread(target=update_frame)
-thread.daemon = True
-thread.start()
-
-today = datetime.date.today().strftime("%Y%m%d")
-
-folder_name = f"/app/images/{today}"
-if not os.path.exists(folder_name):
-    os.makedirs(folder_name)
+update_thread = threading.Thread(target=update_frame)
+update_thread.daemon = True
+update_thread.start()
 
 
 @app.route("/api/capture/start")
@@ -62,6 +77,8 @@ def stop_capture():
 
 def cleanup():
     cap.release()
+    write_queue.put((None, None))
+    write_thread.join()
 
 
 atexit.register(cleanup)
