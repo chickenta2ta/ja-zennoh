@@ -79,18 +79,14 @@ export default function Home() {
 
   const handleUpload = (index: number) => {
     setIsUploading((prevIsUploading) =>
-      prevIsUploading.map((element, i) => {
-        i === index ? true : element;
-      })
+      prevIsUploading.map((element, i) => (i === index ? true : element))
     );
 
     fetch(
       `http://${ipAddresses[index]}:5000/api/upload?height=${heights[index]}`
     ).finally(() => {
       setIsUploading((prevIsUploading) =>
-        prevIsUploading.map((element, i) => {
-          i === index ? false : element;
-        })
+        prevIsUploading.map((element, i) => (i === index ? false : element))
       );
     });
   };
