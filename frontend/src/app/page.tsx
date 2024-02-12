@@ -61,7 +61,11 @@ export default function Home() {
   }, []);
 
   const startRecording = (ip: string) => {
-    fetch(`http://${ip}:5000/api/capture/start`);
+    fetch(
+      `http://${ip}:5000/api/capture/start?gutter=${
+        gutterNumber + gutterAlphabet
+      }`
+    );
   };
 
   const stopRecording = (ip: string) => {

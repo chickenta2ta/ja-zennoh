@@ -30,7 +30,7 @@ def write_frame():
         if frame is None:
             break
 
-        cv2.imwrite(os.path.join(folder_name, f"frame_{timestamp}.jpg"), frame)
+        cv2.imwrite(os.path.join(folder_name, f"frame_{gutter}{timestamp}.jpg"), frame)
 
 
 write_thread = threading.Thread(target=write_frame)
@@ -46,6 +46,7 @@ cap.set(cv2.CAP_PROP_FPS, 30)
 
 current_frame = None
 is_recording = False
+gutter = ""
 
 
 def update_frame():
@@ -66,6 +67,12 @@ update_thread.start()
 
 @app.route("/api/capture/start")
 def start_capture():
+    global gutter
+    gutter = request.args.get("gutter")
+
+    if gutter:
+        gutter = f"{gutter}_"
+
     global is_recording
     is_recording = True
     return "Recording started", 200
@@ -75,6 +82,8 @@ def start_capture():
 def stop_capture():
     global is_recording
     is_recording = False
+    global gutter
+    gutter = ""
     return "Recording stopped", 200
 
 
