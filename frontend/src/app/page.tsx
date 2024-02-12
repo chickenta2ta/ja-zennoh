@@ -2,8 +2,11 @@
 
 import LoadingButton from "@mui/lab/LoadingButton";
 import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import Switch from "@mui/material/Switch";
 import Typography from "@mui/material/Typography";
@@ -37,6 +40,10 @@ export default function Home() {
   const [thumbnails, setThumbnails] = useState(
     new Array(ipAddresses.length).fill(undefined)
   );
+  const [gutterNumber, setGutterNumber] = useState("");
+  const gutterNumbers = ["13", "14"];
+  const [gutterAlphabet, setGutterAlphabet] = useState("");
+  const gutterAlphabets = ["A", "B", "AB"];
 
   useEffect(() => {
     const intervalID = setInterval(() => {
@@ -109,6 +116,49 @@ export default function Home() {
             width: "50%",
           }}
         >
+          <ListItem
+            key="opanchu usagi"
+            sx={{
+              paddingBottom: 2,
+            }}
+          >
+            <Typography variant="subtitle1">ガター番号</Typography>
+            <Select
+              value={gutterNumber}
+              onChange={(event) => {
+                setGutterNumber(event.target.value);
+              }}
+              sx={{
+                width: 90,
+                marginLeft: 1.5,
+              }}
+            >
+              <MenuItem value="">空欄</MenuItem>
+              {gutterNumbers.map((g) => {
+                return <MenuItem value={g}>{g}</MenuItem>;
+              })}
+            </Select>
+            <Select
+              value={gutterAlphabet}
+              onChange={(event) => {
+                setGutterAlphabet(event.target.value);
+              }}
+              sx={{
+                width: 90,
+                marginLeft: 1.5,
+              }}
+            >
+              <MenuItem value="">空欄</MenuItem>
+              {gutterAlphabets.map((g) => {
+                return <MenuItem value={g}>{g}</MenuItem>;
+              })}
+            </Select>
+          </ListItem>
+          <Divider
+            sx={{
+              marginBottom: 1,
+            }}
+          />
           {ipAddresses.map((ip, index) => {
             return (
               <ListItem key={ip}>
