@@ -139,7 +139,7 @@ export default function Home() {
             >
               <MenuItem value="">空欄</MenuItem>
               {gutterNumbers.map((g) => {
-                return <MenuItem value={g}>{g}</MenuItem>;
+                return <MenuItem key={g} value={g}>{g}</MenuItem>;
               })}
             </Select>
             <Select
@@ -154,7 +154,7 @@ export default function Home() {
             >
               <MenuItem value="">空欄</MenuItem>
               {gutterAlphabets.map((g) => {
-                return <MenuItem value={g}>{g}</MenuItem>;
+                return <MenuItem key={g} value={g}>{g}</MenuItem>;
               })}
             </Select>
           </ListItem>
