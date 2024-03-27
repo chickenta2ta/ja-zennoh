@@ -14,12 +14,6 @@ from flask_cors import CORS
 app = Flask(__name__, static_folder="/app/ja-zennoh/frontend/out")
 CORS(app)
 
-today = datetime.date.today().strftime("%Y%m%d")
-
-folder_name = f"/app/images/{today}"
-if not os.path.exists(folder_name):
-    os.makedirs(folder_name)
-
 write_queue = queue.Queue()
 
 
@@ -71,6 +65,12 @@ update_thread.start()
 
 @app.route("/api/capture/start")
 def start_capture():
+    today = datetime.date.today().strftime("%Y%m%d")
+
+    folder_name = f"/app/images/{today}"
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
+
     global gutter
     new_gutter = request.args.get("gutter")
 
@@ -107,6 +107,7 @@ s3_client = boto3.client("s3")
 @app.route("/api/upload")
 def upload_to_s3():
     height = request.args.get("height")
+    today = datetime.date.today().strftime("%Y%m%d")
 
     try:
         for file_name in glob.glob(f"/app/images/{today}/*.jpg"):
